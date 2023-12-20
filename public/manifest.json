@@ -1,0 +1,16 @@
+{
+  "name": "Outliner",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "Owlbear Rodeo",
+  "homepage_url": "https://extensions.owlbear.rodeo/outliner",
+  "icon": "/logo.png",
+  "description": "View an outline of your scenes",
+  "action": {
+    "title": "Outliner",
+    "icon": "/icon.svg",
+    "popover": "/",
+    "height": 129,
+    "width": 250
+  }
+}

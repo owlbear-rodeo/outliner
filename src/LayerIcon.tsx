@@ -1,0 +1,32 @@
+import { Item } from "@owlbear-rodeo/sdk";
+import { MapIcon } from "./icons/layers/MapIcon";
+import { AttachmentIcon } from "./icons/layers/AttachmentIcon";
+import { CharacterIcon } from "./icons/layers/CharacterIcon";
+import { FogIcon } from "./icons/layers/FogIcon";
+import { MountIcon } from "./icons/layers/MountIcon";
+import { NoteIcon } from "./icons/layers/NoteIcon";
+import { PropIcon } from "./icons/layers/PropIcon";
+import { RulerIcon } from "./icons/layers/RulerIcon";
+import { TextIcon } from "./icons/layers/TextIcon";
+import { DrawingIcon } from "./icons/layers/DrawingIcon";
+
+const ICONS: Record<Item["layer"], React.ReactNode> = {
+  MAP: <MapIcon />,
+  ATTACHMENT: <AttachmentIcon />,
+  CHARACTER: <CharacterIcon />,
+  CONTROL: null,
+  DRAWING: <DrawingIcon />,
+  FOG: <FogIcon />,
+  GRID: null,
+  MOUNT: <MountIcon />,
+  NOTE: <NoteIcon />,
+  POINTER: null,
+  POPOVER: null,
+  PROP: <PropIcon />,
+  RULER: <RulerIcon />,
+  TEXT: <TextIcon />,
+};
+
+export function LayerIcon({ layer }: { layer: Item["layer"] }) {
+  return ICONS[layer];
+}
