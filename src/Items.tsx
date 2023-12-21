@@ -23,15 +23,15 @@ import { isTextable, lerp, toPlainText } from "./helpers";
 import { useOwlbearStore } from "./useOwlbearStore";
 
 const VALID_LAYERS = new Set<Item["layer"]>([
-  "MAP",
-  "DRAWING",
-  "PROP",
-  "MOUNT",
-  "CHARACTER",
-  "ATTACHMENT",
-  "NOTE",
-  "TEXT",
   "RULER",
+  "TEXT",
+  "NOTE",
+  "ATTACHMENT",
+  "CHARACTER",
+  "MOUNT",
+  "PROP",
+  "DRAWING",
+  "MAP",
 ]);
 
 export function Items({ search }: { search: string }) {
@@ -94,23 +94,23 @@ export function Items({ search }: { search: string }) {
 
   const [shownItemsByLayer, shownIds] = useMemo(() => {
     const layers: Record<Item["layer"], Item[]> = {
-      MAP: [],
-      DRAWING: [],
-      PROP: [],
-      MOUNT: [],
-      CHARACTER: [],
-      ATTACHMENT: [],
-      NOTE: [],
-      TEXT: [],
-      RULER: [],
-      FOG: [],
-      CONTROL: [],
-      GRID: [],
-      POINTER: [],
       POPOVER: [],
+      POINTER: [],
+      GRID: [],
+      CONTROL: [],
+      FOG: [],
+      RULER: [],
+      TEXT: [],
+      NOTE: [],
+      ATTACHMENT: [],
+      CHARACTER: [],
+      PROP: [],
+      DRAWING: [],
+      MOUNT: [],
+      MAP: [],
     };
 
-    const sortedItems = filteredItems.sort((a, b) => a.zIndex - b.zIndex);
+    const sortedItems = filteredItems.sort((a, b) => b.zIndex - a.zIndex);
 
     for (const item of sortedItems) {
       const hidden = !item.visible && role === "PLAYER";
@@ -246,13 +246,13 @@ export function Items({ search }: { search: string }) {
 
   function handleDragEnd(event: DragEndEvent) {
     if (typeof event.over?.id === "string") {
-      // If we're over the START pseudo element move to the start of the layer
+      // If we're over the START pseudo element move to the top of the layer
       if (event.over && event.over.id.startsWith("START_")) {
         const layer = event.over.id.slice(6) as Item["layer"];
         // Move selection descending from the first zIndex of this layer
         const firstItem = shownItemsByLayer[layer][0];
         if (firstItem) {
-          moveSelectionBefore(firstItem.zIndex, firstItem.layer);
+          moveSelectionAfter(firstItem.zIndex, firstItem.layer);
         }
       } else {
         const overIndex = shownIds.indexOf(event.over.id);
@@ -272,7 +272,7 @@ export function Items({ search }: { search: string }) {
             moveSelectionBetween(minZIndex, maxZIndex, overItem.layer);
           } else {
             // If we're at the end of the list
-            moveSelectionAfter(overItem.zIndex, overItem.layer);
+            moveSelectionBefore(overItem.zIndex, overItem.layer);
           }
         }
       }
@@ -320,7 +320,7 @@ export function Items({ search }: { search: string }) {
     }
 
     await OBR.scene.items.updateItems(
-      selection.sort((a, b) => shownIds.indexOf(b) - shownIds.indexOf(a)),
+      selection.sort((a, b) => shownIds.indexOf(a) - shownIds.indexOf(b)),
       (items) => {
         let i = 1;
         for (const item of items) {
@@ -341,7 +341,7 @@ export function Items({ search }: { search: string }) {
     }
 
     await OBR.scene.items.updateItems(
-      selection.sort((a, b) => shownIds.indexOf(a) - shownIds.indexOf(b)),
+      selection.sort((a, b) => shownIds.indexOf(b) - shownIds.indexOf(a)),
       (items) => {
         let i = 1;
         for (const item of items) {
