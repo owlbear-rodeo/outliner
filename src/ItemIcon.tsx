@@ -21,7 +21,7 @@ export function ItemIcon({ item }: { item: Item }) {
   if (isText(item) || isLabel(item)) {
     return <TextIcon />;
   } else if (isImage(item)) {
-    return <ImageIcon />;
+    return <ImageIcon item={item} />;
   } else if (isShape(item)) {
     return <ShapeIcon item={item} />;
   } else if (isLine(item)) {
