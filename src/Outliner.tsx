@@ -33,6 +33,49 @@ export function Outliner() {
     }
   }, []);
 
+  useEffect(() => {
+    // When a common key is pressed ensure the action is performed in OBR
+    // This is done because the OBR window might not have focus so the
+    // key won't be triggered
+    async function handleKeyDown(e: KeyboardEvent) {
+      // Ignore when typing into an input field
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+      const role = useOwlbearStore.getState().role;
+      const selection = useOwlbearStore.getState().selection;
+      if (e.key === "Delete" || e.key === "Backspace") {
+        // Only allow deleting if your the GM to avoid permissions issues
+        if (role === "GM" && selection) {
+          e.preventDefault();
+          e.stopPropagation();
+          await OBR.scene.items.deleteItems(selection);
+          await OBR.player.deselect();
+        }
+      }
+      if (e.key === "z") {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.shiftKey) {
+            await OBR.scene.history.redo();
+          } else {
+            await OBR.scene.history.undo();
+          }
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <Stack height="100vh">
       <Header />
