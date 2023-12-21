@@ -27,7 +27,7 @@ export const ItemListItem = memo(function ({
     (state) => state.selection?.includes(item.id) ?? false
   );
 
-  const [ref, inView] = useInView({ triggerOnce: true });
+  const [ref, inView] = useInView();
 
   const theme = useTheme();
 
@@ -83,7 +83,7 @@ export const ItemListItem = memo(function ({
           )}
         </>
       ) : (
-        <Box height="20px" />
+        <Box height="28px" />
       )}
     </ListItemButton>
   );
