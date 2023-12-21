@@ -39,10 +39,6 @@ export function ItemList({
     layer !== "FOG" && layer !== "TEXT" ? "s" : ""
   }`;
 
-  if (items.length === 0) {
-    return null;
-  }
-
   return (
     <>
       <ListItemButton dense onClick={handleLayerToggle} divider>

@@ -253,6 +253,8 @@ export function Items({ search }: { search: string }) {
         const firstItem = shownItemsByLayer[layer][0];
         if (firstItem) {
           moveSelectionAfter(firstItem.zIndex, firstItem.layer);
+        } else {
+          moveSelectionLayer(layer);
         }
       } else {
         const overIndex = shownIds.indexOf(event.over.id);
@@ -279,6 +281,19 @@ export function Items({ search }: { search: string }) {
     }
 
     setDragId(null);
+  }
+
+  // Move the current selection to a new layer
+  async function moveSelectionLayer(layer: Item["layer"]) {
+    if (!selection) {
+      return;
+    }
+
+    await OBR.scene.items.updateItems(selection, (items) => {
+      for (const item of items) {
+        item.layer = layer;
+      }
+    });
   }
 
   // Move the current selection between the input zIndex's
@@ -359,6 +374,22 @@ export function Items({ search }: { search: string }) {
     setDragId(null);
   }
 
+  const shownLayers = useMemo<Item["layer"][]>(() => {
+    if (!searching) {
+      const layers = [...VALID_LAYERS];
+      if (role == "GM") {
+        return [layers[0], "FOG", ...layers.slice(1)];
+      } else {
+        return layers;
+      }
+    } else {
+      // When searching only show layers with results
+      return Object.entries(shownItemsByLayer)
+        .filter(([_, items]) => items.length > 0)
+        .map(([layer]) => layer) as Item["layer"][];
+    }
+  }, [searching, shownItemsByLayer, role]);
+
   return (
     <DndContext
       onDragStart={handleDragStart}
@@ -368,10 +399,10 @@ export function Items({ search }: { search: string }) {
       sensors={sensors}
     >
       <SortableContext items={shownIds} strategy={verticalListSortingStrategy}>
-        {Object.entries(shownItemsByLayer).map(([layer, items]) => (
+        {shownLayers.map((layer) => (
           <ItemList
             key={layer}
-            items={items}
+            items={shownItemsByLayer[layer]}
             layer={layer as Item["layer"]}
             onItemSelect={handleItemSelect}
             onItemFocus={handleItemFocus}
