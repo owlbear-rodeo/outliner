@@ -9,8 +9,8 @@ import { Item } from "@owlbear-rodeo/sdk";
 import { useState } from "react";
 import { ItemListItem } from "./ItemListItem";
 import { LayerIcon } from "./LayerIcon";
-import { capitalize } from "./capitalize";
 import { SortableItem } from "./SortableItem";
+import { capitalize } from "./helpers";
 
 export function ItemList({
   layer,
@@ -58,8 +58,8 @@ export function ItemList({
         <ListItemText primary={layerName} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" dense sx={{ minHeight: "12px" }}>
+      <Collapse in={open} unmountOnExit>
+        <List component="div" dense>
           {/* A pseudo element that shows a sort indicator for the start of the list */}
           <SortableItem itemId={`START_${layer}`} />
           {items.map((item) => (
