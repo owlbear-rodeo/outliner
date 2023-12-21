@@ -23,6 +23,7 @@ import { isTextable, lerp, toPlainText } from "./helpers";
 import { useOwlbearStore } from "./useOwlbearStore";
 
 const VALID_LAYERS = new Set<Item["layer"]>([
+  "POINTER",
   "RULER",
   "TEXT",
   "NOTE",

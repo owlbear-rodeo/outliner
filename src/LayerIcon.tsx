@@ -9,6 +9,7 @@ import { PropIcon } from "./icons/layers/PropIcon";
 import { RulerIcon } from "./icons/layers/RulerIcon";
 import { TextIcon } from "./icons/layers/TextIcon";
 import { DrawingIcon } from "./icons/layers/DrawingIcon";
+import { PointerIcon } from "./icons/layers/PointerIcon";
 
 const ICONS: Record<Item["layer"], React.ReactNode> = {
   MAP: <MapIcon />,
@@ -20,7 +21,7 @@ const ICONS: Record<Item["layer"], React.ReactNode> = {
   GRID: null,
   MOUNT: <MountIcon />,
   NOTE: <NoteIcon />,
-  POINTER: null,
+  POINTER: <PointerIcon />,
   POPOVER: null,
   PROP: <PropIcon />,
   RULER: <RulerIcon />,
