@@ -14,7 +14,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import OBR, { Item, Math2, Vector2 } from "@owlbear-rodeo/sdk";
+import OBR, { Item, Math2, Vector2, isShape } from "@owlbear-rodeo/sdk";
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
 import { ItemDragOverlay } from "./ItemDragOverlay";
@@ -50,6 +50,8 @@ export function Items({ search }: { search: string }) {
         id: item.id,
         name: item.name,
         layer: item.layer,
+        type: item.type,
+        shapeType: "",
         plainText: "",
         richText: "",
       };
@@ -60,20 +62,32 @@ export function Items({ search }: { search: string }) {
         searchItem.richText = toPlainText(item.text.richText);
       }
 
+      if (isShape(item)) {
+        searchItem.shapeType = item.shapeType;
+      }
+
       return searchItem;
     });
 
     return new Fuse(searchItems, {
-      keys: ["id", "name", "layer", "plainText", "richText"],
+      keys: [
+        "id",
+        "name",
+        "layer",
+        "type",
+        "shapeType",
+        "plainText",
+        "richText",
+      ],
+      threshold: 0.25,
     });
   }, [items, searching]);
 
   const filteredItems = useMemo(() => {
     if (search && fuse) {
-      const results = new Set(
-        fuse.search(search).map((result) => result.item.id)
-      );
-      return items.filter((item) => results.has(item.id));
+      const results = fuse.search(search);
+      const ids = new Set(results.map((result) => result.item.id));
+      return items.filter((item) => ids.has(item.id));
     }
     return items;
   }, [items, fuse, search]);
