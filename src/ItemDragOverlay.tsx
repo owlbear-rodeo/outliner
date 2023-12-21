@@ -47,7 +47,7 @@ export const ItemDragOverlay = memo(function ({
             transform: `translate(${coords[index].x}px, ${coords[index].y}px)`,
           }}
         >
-          <ItemListItem item={item} solid />
+          <ItemListItem item={item} dragging />
           {index === selectedIndices.length - 1 && selection.length > 1 && (
             <Badge
               sx={{

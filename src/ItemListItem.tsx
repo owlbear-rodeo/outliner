@@ -16,12 +16,12 @@ export const ItemListItem = memo(function ({
   item,
   onClick,
   onDoubleClick,
-  solid,
+  dragging,
 }: {
   item: Item;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onDoubleClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  solid?: boolean;
+  dragging?: boolean;
 }) {
   const selected = useOwlbearStore(
     (state) => state.selection?.includes(item.id) ?? false
@@ -36,13 +36,14 @@ export const ItemListItem = memo(function ({
       sx={{
         margin: "4px 8px",
         borderRadius: "12px",
-        backgroundColor: solid
+        backgroundColor: dragging
           ? `${theme.palette.primary.main} !important`
           : undefined,
-        boxShadow: solid ? theme.shadows[5] : undefined,
-        color: solid
+        boxShadow: dragging ? theme.shadows[5] : undefined,
+        color: dragging
           ? `${theme.palette.primary.contrastText} !important`
           : undefined,
+        cursor: dragging ? "grabbing" : undefined,
       }}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
