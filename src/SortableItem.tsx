@@ -30,6 +30,7 @@ export function SortableItem({
                 backgroundColor: "primary.main",
               }
             : undefined,
+        outline: "none",
       }}
       {...attributes}
       {...listeners}
