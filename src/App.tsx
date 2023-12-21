@@ -11,6 +11,8 @@ export function App() {
   if (sceneReady) {
     return <Outliner />;
   } else {
-    return <Header subtitle="Open a scene to use the outliner" />;
+    return (
+      <Header title="Outliner" subtitle="Open a scene to use the outliner" />
+    );
   }
 }

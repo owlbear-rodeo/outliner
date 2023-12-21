@@ -5,16 +5,18 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 export function Header({
+  title,
   subtitle,
   action,
 }: {
+  title: string;
   subtitle?: string;
   action?: React.ReactNode;
 }) {
   return (
     <>
       <CardHeader
-        title="Outliner"
+        title={title}
         action={action}
         titleTypographyProps={{
           sx: {

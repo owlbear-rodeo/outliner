@@ -1,7 +1,3 @@
-import OBR, { Item, Math2, Vector2 } from "@owlbear-rodeo/sdk";
-import { useMemo, useState } from "react";
-import { ItemList } from "./ItemList";
-import { useOwlbearStore } from "./useOwlbearStore";
 import {
   DndContext,
   DragEndEvent,
@@ -18,8 +14,13 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import OBR, { Item, Math2, Vector2 } from "@owlbear-rodeo/sdk";
+import Fuse from "fuse.js";
+import { useMemo, useState } from "react";
 import { ItemDragOverlay } from "./ItemDragOverlay";
+import { ItemList } from "./ItemList";
 import { isTextable, lerp, toPlainText } from "./helpers";
+import { useOwlbearStore } from "./useOwlbearStore";
 
 const VALID_LAYERS = new Set<Item["layer"]>([
   "MAP",
@@ -33,10 +34,49 @@ const VALID_LAYERS = new Set<Item["layer"]>([
   "RULER",
 ]);
 
-export function Items() {
+export function Items({ search }: { search: string }) {
   const items = useOwlbearStore((state) => state.items);
   const role = useOwlbearStore((state) => state.role);
   const selection = useOwlbearStore((state) => state.selection);
+
+  const searching = Boolean(search);
+
+  const fuse = useMemo(() => {
+    if (!searching) {
+      return;
+    }
+    const searchItems = items.map((item) => {
+      const searchItem = {
+        id: item.id,
+        name: item.name,
+        layer: item.layer,
+        plainText: "",
+        richText: "",
+      };
+
+      // Search item text
+      if (isTextable(item)) {
+        searchItem.plainText = item.text.plainText;
+        searchItem.richText = toPlainText(item.text.richText);
+      }
+
+      return searchItem;
+    });
+
+    return new Fuse(searchItems, {
+      keys: ["id", "name", "layer", "plainText", "richText"],
+    });
+  }, [items, searching]);
+
+  const filteredItems = useMemo(() => {
+    if (search && fuse) {
+      const results = new Set(
+        fuse.search(search).map((result) => result.item.id)
+      );
+      return items.filter((item) => results.has(item.id));
+    }
+    return items;
+  }, [items, fuse, search]);
 
   const [shownItemsByLayer, shownIds] = useMemo(() => {
     const layers: Record<Item["layer"], Item[]> = {
@@ -56,7 +96,7 @@ export function Items() {
       POPOVER: [],
     };
 
-    const sortedItems = items.sort((a, b) => a.zIndex - b.zIndex);
+    const sortedItems = filteredItems.sort((a, b) => a.zIndex - b.zIndex);
 
     for (const item of sortedItems) {
       const hidden = !item.visible && role === "PLAYER";
@@ -73,7 +113,7 @@ export function Items() {
     }
 
     return [layers, allIds];
-  }, [items, role]);
+  }, [filteredItems, role]);
 
   async function handleItemSelect(
     item: Item,

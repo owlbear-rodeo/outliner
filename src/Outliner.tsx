@@ -1,11 +1,13 @@
-import Stack from "@mui/material/Stack";
-import { Header } from "./Header";
-import OBR from "@owlbear-rodeo/sdk";
-import { useEffect, useRef } from "react";
 import List from "@mui/material/List";
-import { Items } from "./Items";
+import Stack from "@mui/material/Stack";
+import OBR from "@owlbear-rodeo/sdk";
+import { useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+import { Header } from "./Header";
+import { Items } from "./Items";
+import { SearchField } from "./SearchField";
+import { useOwlbearStore } from "./useOwlbearStore";
 
 export function Outliner() {
   const listRef = useRef<HTMLUListElement>(null);
@@ -21,7 +23,7 @@ export function Outliner() {
           // Set a minimum height of 64px
           const listHeight = Math.max(borderHeight, 64);
           // Set the action height to the list height + the card header height + padding
-          OBR.action.setHeight(listHeight + 64 + 8);
+          OBR.action.setHeight(listHeight + 64 + 16);
         }
       });
       resizeObserver.observe(listRef.current);
@@ -32,6 +34,9 @@ export function Outliner() {
       };
     }
   }, []);
+
+  const [search, setSearch] = useState("");
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   useEffect(() => {
     // When a common key is pressed ensure the action is performed in OBR
@@ -77,11 +82,30 @@ export function Outliner() {
   }, []);
 
   return (
-    <Stack height="100vh">
-      <Header />
-      <SimpleBar style={{ maxHeight: "calc(100vh - 72px)" }}>
+    <Stack
+      height="100vh"
+      sx={{
+        ".MuiCardHeader-action": {
+          mr: searchExpanded ? 0 : undefined,
+          flexShrink: searchExpanded ? 1 : undefined,
+        },
+        overflow: "hidden",
+      }}
+    >
+      <Header
+        title={searchExpanded ? "" : "Outliner"}
+        action={
+          <SearchField
+            value={search}
+            onChange={setSearch}
+            expanded={searchExpanded}
+            onExpand={setSearchExpanded}
+          />
+        }
+      />
+      <SimpleBar style={{ maxHeight: "calc(100vh - 64px)" }}>
         <List ref={listRef} disablePadding>
-          <Items />
+          <Items search={search} />
         </List>
       </SimpleBar>
     </Stack>
