@@ -68,7 +68,7 @@ export const ItemListItem = memo(function ({
             <ListItemIcon
               sx={{ minWidth: "28px", opacity: "0.5", color: "inherit" }}
             >
-              <Tooltip title="locked">
+              <Tooltip title="Locked">
                 <LockedIcon fontSize="small" />
               </Tooltip>
             </ListItemIcon>
@@ -77,7 +77,7 @@ export const ItemListItem = memo(function ({
             <ListItemIcon
               sx={{ minWidth: "28px", opacity: "0.5", color: "inherit" }}
             >
-              <Tooltip title="hidden">
+              <Tooltip title="Hidden">
                 <HiddenIcon fontSize="small" />
               </Tooltip>
             </ListItemIcon>
