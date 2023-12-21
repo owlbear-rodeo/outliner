@@ -19,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { ItemDragOverlay } from "./ItemDragOverlay";
-import { lerp } from "./lerp";
+import { isTextable, lerp, toPlainText } from "./helpers";
 
 const VALID_LAYERS = new Set<Item["layer"]>([
   "MAP",

@@ -1,8 +1,8 @@
 import ListItemText from "@mui/material/ListItemText";
-import { Item, RichText, TextContent, isShape } from "@owlbear-rodeo/sdk";
+import { Item, isShape } from "@owlbear-rodeo/sdk";
 import { useMemo } from "react";
-import { capitalize } from "./capitalize";
 import { useOwlbearStore } from "./useOwlbearStore";
+import { Textable, capitalize, isTextable, toPlainText } from "./helpers";
 
 export function ItemText({ item }: { item: Item }) {
   const role = useOwlbearStore((state) => state.role);
@@ -29,24 +29,6 @@ export function ItemText({ item }: { item: Item }) {
   }
 }
 
-interface Textable {
-  id: string;
-  text: TextContent;
-  name: string;
-}
-
-function isTextable(item: any): item is Textable {
-  return typeof item.id === "string" && typeof item.text === "object";
-}
-
-export function isPlainObject(
-  item: unknown
-): item is Record<keyof any, unknown> {
-  return (
-    item !== null && typeof item === "object" && item.constructor === Object
-  );
-}
-
 function TextableText({ item, name }: { item: Textable; name: string }) {
   const plainText = useMemo(() => {
     if (item.text.type === "PLAIN") {
@@ -62,32 +44,4 @@ function TextableText({ item, name }: { item: Textable; name: string }) {
       primary={plainText || name}
     />
   );
-}
-
-interface TextNode {
-  text: string;
-}
-
-function isTextNode(node: any): node is TextNode {
-  return isPlainObject(node) && typeof node.text === "string";
-}
-
-interface Descendent {
-  children: any[];
-}
-
-function isDescendent(node: any): node is Descendent {
-  return isPlainObject(node) && Array.isArray(node.children);
-}
-
-function toPlainText(node: RichText): string {
-  if (isTextNode(node)) {
-    return node.text;
-  } else if (isDescendent(node)) {
-    return node.children.map((n) => toPlainText(n)).join(" ");
-  } else if (Array.isArray(node)) {
-    return node.map((n) => toPlainText(n)).join(" ");
-  } else {
-    return "";
-  }
 }
