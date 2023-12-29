@@ -15,7 +15,7 @@ learn-more: https://extensions.owlbear.rodeo/outliner
 
 Manage layers, search for items and view an outline of your scenes.
 
-![outliner](https://raw.githubusercontent.com/owlbear-rodeo/outliner/main/docs/outliner.jpg)
+![outliner action](https://raw.githubusercontent.com/owlbear-rodeo/outliner/main/docs/action.jpg)
 
 The Outliner will show a list of all the layers available.
 You can expand a layer by clicking it. Once expanded the Outliner will show every item in that layer.
