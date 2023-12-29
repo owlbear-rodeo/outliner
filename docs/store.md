@@ -6,7 +6,7 @@ image: https://raw.githubusercontent.com/owlbear-rodeo/outliner/main/docs/header
 icon: https://outliner.owlbear.rodeo/logo.png
 tags:
   - built-by-owlbear
-  - automation
+  - other
 manifest: https://outliner.owlbear.rodeo/manifest.json
 learn-more: https://extensions.owlbear.rodeo/outliner
 ---
