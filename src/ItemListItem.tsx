@@ -33,6 +33,7 @@ export const ItemListItem = memo(function ({
   const selected = useOwlbearStore(
     (state) => state.selection?.includes(item.id) ?? false
   );
+  const role = useOwlbearStore((state) => state.role);
 
   const [ref, inView] = useInView();
 
@@ -45,8 +46,10 @@ export const ItemListItem = memo(function ({
   }, [item.locked, selected, hovering]);
 
   const showVisible = useMemo(() => {
-    return !item.visible || selected || hovering || showLocked;
-  }, [item.visible, selected, hovering, showLocked]);
+    return (
+      (!item.visible || selected || hovering || showLocked) && role === "GM"
+    );
+  }, [item.visible, selected, hovering, showLocked, role]);
 
   const showActions = inView && (showVisible || showLocked);
 
