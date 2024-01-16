@@ -1,13 +1,11 @@
 import styled from "@mui/material/styles/styled";
 import { Image } from "@owlbear-rodeo/sdk";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import createSvgIcon from "@mui/material/utils/createSvgIcon";
+import { useThumbnailStore } from "../../useThumbnailStore";
 
-const StyledImage = styled("img")({
-  width: "20px",
-  height: "20px",
+const StyledImage = styled("canvas")({
   borderRadius: "4px",
-  objectFit: "cover",
 });
 
 const ImageSvg = createSvgIcon(
@@ -16,17 +14,31 @@ const ImageSvg = createSvgIcon(
 );
 
 export function ImageIcon({ item }: { item: Image }) {
-  const [error, setError] = useState(false);
+  const thumbnail = useThumbnailStore(
+    (state) => state.thumbnails[item.image.url]
+  );
+  const createThumbnailIfNeeded = useThumbnailStore(
+    (state) => state.createThumbnailIfNeeded
+  );
 
-  if (error) {
+  useEffect(() => {
+    createThumbnailIfNeeded(item);
+  }, []);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (thumbnail && context) {
+      context.drawImage(thumbnail, 0, 0);
+    }
+  }, [thumbnail]);
+
+  if (!thumbnail) {
     return <ImageSvg />;
   }
 
   return (
-    <StyledImage
-      aria-hidden="true"
-      src={item.image.url}
-      onError={() => setError(true)}
-    />
+    <StyledImage aria-hidden="true" ref={canvasRef} width="20" height="20" />
   );
 }
