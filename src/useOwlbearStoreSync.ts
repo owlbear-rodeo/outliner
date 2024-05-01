@@ -32,4 +32,10 @@ export function useOwlbearStoreSync() {
     OBR.player.getSelection().then(setSelection);
     return OBR.player.onChange(handlePlayerChange);
   }, []);
+
+  const setPermissions = useOwlbearStore((state) => state.setPermissions);
+  useEffect(() => {
+    OBR.room.getPermissions().then(setPermissions);
+    return OBR.room.onPermissionsChange(setPermissions);
+  }, []);
 }

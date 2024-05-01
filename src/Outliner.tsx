@@ -8,6 +8,7 @@ import { Header } from "./Header";
 import { Items } from "./Items";
 import { SearchField } from "./SearchField";
 import { useOwlbearStore } from "./useOwlbearStore";
+import { itemHasPermission } from "./hasPermission";
 
 export function Outliner() {
   const listRef = useRef<HTMLUListElement>(null);
@@ -52,12 +53,18 @@ export function Outliner() {
       }
       const role = useOwlbearStore.getState().role;
       const selection = useOwlbearStore.getState().selection;
+      const permissions = useOwlbearStore.getState().permissions;
       if (e.key === "Delete" || e.key === "Backspace") {
-        // Only allow deleting if your the GM to avoid permissions issues
-        if (role === "GM" && selection) {
+        if (selection) {
           e.preventDefault();
           e.stopPropagation();
-          await OBR.scene.items.deleteItems(selection);
+          const items = await OBR.scene.items.getItems(selection);
+          const canDelete = items.filter((item) =>
+            itemHasPermission(item, "DELETE", permissions, role, OBR.player.id)
+          );
+          if (canDelete.length > 0) {
+            await OBR.scene.items.deleteItems(canDelete.map((item) => item.id));
+          }
           await OBR.player.deselect();
         }
       }

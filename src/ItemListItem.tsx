@@ -18,6 +18,7 @@ import useTheme from "@mui/material/styles/useTheme";
 import ListItem from "@mui/material/ListItem";
 import Stack from "@mui/material/Stack";
 import { IconButton } from "@mui/material";
+import { useItemHsaPermission } from "./useHasPermission";
 
 export const ItemListItem = memo(function ({
   item,
@@ -41,9 +42,10 @@ export const ItemListItem = memo(function ({
 
   const [hovering, setHovering] = useState(false);
 
+  const hasUpdatePermission = useItemHsaPermission(item, "UPDATE");
   const showLocked = useMemo(() => {
-    return item.locked || selected || hovering;
-  }, [item.locked, selected, hovering]);
+    return (item.locked || selected || hovering) && hasUpdatePermission;
+  }, [item.locked, selected, hovering, hasUpdatePermission]);
 
   const showVisible = useMemo(() => {
     return (
